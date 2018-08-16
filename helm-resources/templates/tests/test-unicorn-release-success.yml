@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{template "unicorn.releasedVersionName" .}}-test-success"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: {{ .Chart.Name }}
+    image: "{{ .Values.image.repository }}:latest"
+    command: ["python", "/home/tests/successful_test.py"]
+  restartPolicy: Never

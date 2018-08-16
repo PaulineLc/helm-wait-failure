@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "unicorn.releasedVersionName" . }}
+  labels:
+    app: {{ template "unicorn.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ template "unicorn.releasedVersionName" . }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "unicorn.name" . }}
+        release: {{ template "unicorn.releasedVersionName" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          readinessProbe:
+            exec:
+              command:
+              - echo
+              - Hello
+            initialDelaySeconds: 5
+            periodSeconds: 5
